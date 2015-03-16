@@ -1,5 +1,5 @@
 -module(ex_3_5).
--export([filter/2, reverse/1, concatenate/1, flatten/1]).
+-export([filter/2, reverse/1, concatenate/1, flatten/1, flat/1]).
 
 
 % Write a function that, given a list of integers and an integer, will return all integers smaller than or equal to that integer
@@ -28,12 +28,16 @@ concatenate([[Head | Tail] | Lists], Newlist) -> concatenate([Tail | Lists], [He
 
 % Write a function that, given a list of nested lists, will return a flat list
 
-%% DOESN'T WORK!!!
-
 flatten(Lists) -> flatten(Lists, []).
+
+flat(List) -> flat(List, []). % given a single nested list, returns a flat list
+
+flat([], Newlist) -> Newlist;
+flat([[HeadOfHead | TailOfHead ] | Tail], Newlist) -> flat(Tail, flat(HeadOfHead) ++ flat(TailOfHead) ++ Newlist);
+flat([[] | Tail], Newlist) -> flat(Tail, Newlist);
+flat([Head | Tail], Newlist) -> flat(Tail, [Head | Newlist]);
+flat(X, Newlist) -> flat([], [X | Newlist]).
 
 flatten([], Newlist) -> reverse(Newlist);
 flatten([[] | Lists], Newlist) -> flatten(Lists, Newlist);
-flatten([[Head | Tail] | Lists], Newlist) when is_list(Head) -> flatten([Tail | Lists], [flatten(Head) | Newlist]);
-flatten([[Head | Tail] | Lists], Newlist) -> flatten([Tail | Lists], [Head | Newlist]).
-
+flatten([[Head | Tail] | Lists], Newlist) -> flatten([Tail | Lists], flat(Head) ++ Newlist).
